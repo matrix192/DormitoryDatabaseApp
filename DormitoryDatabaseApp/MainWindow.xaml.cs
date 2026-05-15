@@ -138,6 +138,69 @@ namespace DormitoryDatabaseApp
             LoadData();
         }
 
+        private void GetByIdButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var selectedTable = GetSelectedTable();
+
+                if (selectedTable == null)
+                {
+                    MessageBox.Show("Выберите таблицу.");
+                    return;
+                }
+
+                string idColumn = GetPrimaryKeyColumn(selectedTable.TableName);
+
+                string input = Microsoft.VisualBasic.Interaction.InputBox(
+                    $"Введите значение {idColumn}:",
+                    "Поиск записи по ID",
+                    ""
+                );
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    MessageBox.Show("ID не может быть пустым.");
+                    return;
+                }
+
+                if (!int.TryParse(input, out int idValue) || idValue <= 0)
+                {
+                    MessageBox.Show("ID должен быть положительным целым числом.");
+                    return;
+                }
+
+                var resultTable = _dbService.GetById(
+                    selectedTable.TableName,
+                    idColumn,
+                    idValue
+                );
+
+                if (resultTable.Rows.Count == 0)
+                {
+                    MessageBox.Show(
+                        "Запись с таким ID не найдена.",
+                        "Результат поиска",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                    return;
+                }
+
+                _currentTable = resultTable;
+                MainDataGrid.ItemsSource = _currentTable.DefaultView;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Ошибка при поиске записи:\n{ex.Message}",
+                    "Ошибка",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+        }
+
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             try

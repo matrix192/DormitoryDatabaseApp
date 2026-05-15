@@ -37,6 +37,26 @@ namespace DormitoryDatabaseApp.Data
             return table;
         }
 
+        public DataTable GetById(string tableName, string idColumn, object idValue)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            string query = $@"
+                        SELECT *
+                        FROM ""{tableName}""
+                        WHERE ""{idColumn}"" = @idValue;";
+
+            using var command = new NpgsqlCommand(query, connection);
+            command.Parameters.AddWithValue("@idValue", idValue);
+
+            using var adapter = new NpgsqlDataAdapter(command);
+            var table = new DataTable();
+            adapter.Fill(table);
+
+            return table;
+        }
+
         public List<string> GetColumns(string tableName)
         {
             var columns = new List<string>();

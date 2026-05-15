@@ -13,7 +13,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Верхняя панель -->
         <Border Grid.Row="0"
                 Padding="10"
                 CornerRadius="8"
@@ -40,7 +39,6 @@
             </StackPanel>
         </Border>
 
-        <!-- Таблица -->
         <DataGrid x:Name="MainDataGrid"
                   Grid.Row="1"
                   Margin="0,15,0,15"
@@ -51,7 +49,6 @@
                   CanUserAddRows="False"
                   FontSize="14"/>
 
-        <!-- Нижняя панель -->
         <Border Grid.Row="2"
                 Padding="10"
                 CornerRadius="8"
@@ -80,11 +77,11 @@
                         Margin="5"
                         Click="DeleteButton_Click"/>
 
-                <Button Content="Получить все значения"
+                <Button Content="Получить значение по ID"
                         Width="190"
                         Height="38"
                         Margin="5"
-                        Click="GetAllButton_Click"/>
+                        Click="GetByIdButton_Click"/>
 
             </StackPanel>
         </Border>
