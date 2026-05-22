@@ -36,6 +36,27 @@
                         Height="32"
                         Margin="15,0,0,0"
                         Click="RefreshButton_Click"/>
+                <TextBlock Text="Фильтр:"
+           VerticalAlignment="Center"
+           FontSize="14"
+           Margin="20,0,5,0"/>
+
+                <TextBox x:Name="FilterTextBox"
+         Width="200"
+         Height="30"
+         Margin="5,0,0,0"/>
+
+                <Button Content="Найти"
+        Width="100"
+        Height="30"
+        Margin="5,0,0,0"
+        Click="FilterButton_Click"/>
+
+                <Button Content="Сброс"
+        Width="100"
+        Height="30"
+        Margin="5,0,0,0"
+        Click="ClearFilterButton_Click"/>
             </StackPanel>
         </Border>
 
@@ -70,6 +91,8 @@
                         Height="38"
                         Margin="5"
                         Click="UpdateButton_Click"/>
+                
+                
 
                 <Button Content="Удалить"
                         Width="140"

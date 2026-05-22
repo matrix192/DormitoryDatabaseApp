@@ -2,6 +2,9 @@
 using DormitoryDatabaseApp.Models;
 using System.Data;
 using System.Windows;
+using System.Linq;
+using System.Data;
+
 
 namespace DormitoryDatabaseApp
 {
@@ -87,6 +90,11 @@ namespace DormitoryDatabaseApp
                     MessageBoxButton.OK,
                     MessageBoxImage.Error
                 );
+            }
+
+            if (_currentTable != null)
+            {
+                _currentTable.DefaultView.RowFilter = "";
             }
         }
 
@@ -599,8 +607,66 @@ namespace DormitoryDatabaseApp
                 }
             }
 
-            return true;
+            return true;     
         }
+
+        private void ApplyFilter(string filterText)
+        {
+            if (_currentTable == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(filterText))
+            {
+                _currentTable.DefaultView.RowFilter = "";
+                return;
+            }
+
+            var filters = new List<string>();
+
+            foreach (DataColumn column in _currentTable.Columns)
+            {
+                // только строки
+                if (column.DataType == typeof(string))
+                {
+                    filters.Add($"[{column.ColumnName}] LIKE '%{filterText}%'");
+                }
+                else
+                {
+                    filters.Add($"CONVERT([{column.ColumnName}], 'System.String') LIKE '%{filterText}%'");
+                }
+            }
+
+            string combinedFilter = string.Join(" OR ", filters);
+
+            _currentTable.DefaultView.RowFilter = combinedFilter;
+        }
+
+        private void FilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string filterText = FilterTextBox.Text.Trim();
+                ApplyFilter(filterText);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка фильтрации:\n{ex.Message}");
+            }
+        }
+
+        private void ClearFilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentTable == null)
+                return;
+
+            FilterTextBox.Clear();
+            _currentTable.DefaultView.RowFilter = "";
+        }
+
+
+
 
     }
 }

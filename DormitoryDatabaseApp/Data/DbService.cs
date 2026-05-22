@@ -28,7 +28,46 @@ namespace DormitoryDatabaseApp.Data
             using var connection = new NpgsqlConnection(_connectionString);
             connection.Open();
 
-            string query = $@"SELECT * FROM ""{tableName}"" ORDER BY 1";
+            string query = tableName switch
+            {
+                "факультет-общежитие" => @"
+        SELECT 
+            fo.id_общежития,
+            o.адрес AS ""Адрес общежития"",
+            fo.id_факультета,
+            f.""Название"" AS ""Факультет""
+        FROM ""факультет-общежитие"" fo
+        JOIN ""общаги"" o ON o.id = fo.id_общежития
+        JOIN ""факультет"" f ON f.id = fo.id_факультета
+        ORDER BY fo.id_общежития
+    ",
+
+                "общежития-персонал" => @"
+        SELECT 
+            op.id_общежития,
+            o.адрес AS ""Адрес общежития"",
+            op.id_персонала,
+            p.""Фамилия"" AS ""Фамилия"",
+            p.""Имя"" AS ""Имя""
+        FROM ""общежития-персонал"" op
+        JOIN ""общаги"" o ON o.id = op.id_общежития
+        JOIN ""Обслуживающий персонал"" p ON p.id = op.id_персонала
+        ORDER BY op.id_общежития
+    ",
+
+                "жилые помещения" => @"
+        SELECT 
+            jp.id,
+            jp.""количество комнат"",
+            jp.""количество спальных мест"",
+            o.адрес AS ""Адрес общежития""
+        FROM ""жилые помещения"" jp
+        JOIN ""общаги"" o ON o.id = jp.id_общежития
+    ",
+
+                _ => $@"SELECT * FROM ""{tableName}"" ORDER BY 1"
+            };
+
 
             using var adapter = new NpgsqlDataAdapter(query, connection);
             var table = new DataTable();
